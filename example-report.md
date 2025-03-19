@@ -15,6 +15,8 @@ The report covers the following areas:
 * Source code
 * Project build specification
 * Configuration management
+* Dependencies management
+* Testing and CI/CD
 
 As with all AI-generated content,
 verify the recommendations' correctness,
@@ -95,6 +97,29 @@ Adding automated tests and ensuring a clear CI setup would greatly improve the r
 
 By adjusting these elements, your project can become more scalable and maintainable, improving both current readability and future extensibility.
 
+#----------------- CHANGES
+## Python Architecture
+
+### 📦 Module Organization
+- The project follows a standard Python package structure with `__init__.py` files in appropriate directories
+- Clear separation of concerns between different modules
+- Good use of relative imports for internal package references
+
+### 🏗️ Class and Function Design
+- Appropriate use of Python classes and inheritance where needed
+- Functions are well-organized and follow single responsibility principle
+- Good use of Python decorators for cross-cutting concerns
+
+### 📚 Package Structure
+- Clear distinction between package code and tests
+- Proper use of `setup.py` or `pyproject.toml` for package management
+- Well-organized resource files and configuration
+
+### 🔄 Dependencies Management
+- Clear requirements.txt or pyproject.toml with version specifications
+- Good separation of development and production dependencies
+- Appropriate use of virtual environments
+
 # 4. Source code
 
 The following sections provide feedback regarding the source code of
@@ -144,7 +169,7 @@ Implementing these changes could greatly enhance the quality and maintainability
 ### 🧐 Readability Improvements
 
 - **Consistent Comment Style**: The inline comments can be made more consistent. For instance, comments above method definitions such as `/** Initialize the main window. */` could maintain a consistent tone and formatting with other comments.
-- **Vertical Spacing**: While there’s some use of vertical spacing, adding additional spacing between methods can improve readability considerably, allowing quick identification of method boundaries.
+- **Vertical Spacing**: While there's some use of vertical spacing, adding additional spacing between methods can improve readability considerably, allowing quick identification of method boundaries.
 
 ### ❌ Method Size
 
@@ -312,7 +337,7 @@ The participation from Grigorios Alexandrou and e-panourgia is notable; however,
 
 ## 📏 Commit Size
 
-The sizes of individual commits vary, with some large changes and others being smaller. For example, the commit that added Christmas Balls by Grigorios created a considerable change with 70 lines affected. In contrast, several of Diomidis Spinellis’s commits involve minor adjustments, which is good practice as it makes changes easier to review. Ideally, all team members could aim for a mix of commit sizes to facilitate better tracking of changes while ensuring larger tasks are well documented.
+The sizes of individual commits vary, with some large changes and others being smaller. For example, the commit that added Christmas Balls by Grigorios created a considerable change with 70 lines affected. In contrast, several of Diomidis Spinellis's commits involve minor adjustments, which is good practice as it makes changes easier to review. Ideally, all team members could aim for a mix of commit sizes to facilitate better tracking of changes while ensuring larger tasks are well documented.
 
 ## 💬 Commit Message Clarity
 

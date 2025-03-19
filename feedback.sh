@@ -157,10 +157,19 @@ report_contents()
     cat <<\EOF
 Below you will find a list of the application's source files as taken from
 the repository.
-Please provide feedback on the structure, missing files, and files
-that shouldn't have been included.
-Don't forget to comment on building, testing, and documentation.
-Comment explicitly on support for continuous integration.
+
+#----------------- CHANGES
+Please provide feedback on:
+1. Project structure and organization
+2. Missing essential files (e.g., requirements.txt, setup.py, tests)
+3. Files that shouldn't have been included
+4. Building and testing setup
+5. Documentation
+6. Continuous integration configuration
+7. Dependencies management
+8. Python-specific files (e.g., __init__.py, pyproject.toml)
+#----------------- CHANGES
+
 Do not provide comments regarding the (unknown to you) file contents.
 EOF
     git --git-dir="$repo"/.git ls-files
@@ -174,11 +183,25 @@ report_architecture()
 
   heading '# 3. Project architecture'
 
-  if (( $(find "$repo" -name \*.java | wc -l) == 0)) ; then
-    echo 'No Java files were found in the repository. Nothing to report.'
-    return
+  # Check for Java files
+  if (( $(find "$repo" -name \*.java | wc -l) > 0)) ; then
+    report_java_architecture "$repo"
   fi
 
+#----------------- CHANGES
+  # Check for Python files
+  if (( $(find "$repo" -name \*.py | wc -l) > 0)) ; then
+    report_python_architecture "$repo"
+  fi
+#----------------- CHANGES
+}
+
+# Report on Java project architecture
+report_java_architecture()
+{
+  local repo="$1"
+
+  heading '### Java Architecture'
   (
     general_prompt
     cat <<\EOF
@@ -195,6 +218,35 @@ EOF
     xargs wc -l
   ) | query_ai
 }
+
+#----------------- CHANGES
+# Report on Python project architecture
+report_python_architecture()
+{
+  local repo="$1"
+
+  heading '### Python Architecture'
+  (
+    general_prompt
+    cat <<\EOF
+Below you will find the Python module structure and file sizes.
+Provide feedback on:
+1. Module organization and package structure
+2. Use of Python-specific features (classes, functions, decorators)
+3. Project layout and architecture patterns
+4. Dependencies and requirements management
+EOF
+    cd "$repo"
+
+    # Find Python files and their sizes
+    find . -name \*.py | xargs wc -l
+
+    # Extract class and function definitions
+    find . -name \*.py -exec grep -l "^class\|^def" {} \;
+    find . -name \*.py -exec grep "^class\|^def" {} \;
+  ) | query_ai
+}
+#----------------- CHANGES
 
 # Report on each source code of the specified file
 report_source_code()
@@ -236,6 +288,27 @@ report_all_source_code()
   local counter=1
 
   heading '# 4. Source code'
+
+  # Check for Java files
+  if (( $(find "$repo" -name \*.java | wc -l) > 0)) ; then
+    report_java_source_code "$repo"
+  fi
+
+#----------------- CHANGES
+  # Check for Python files
+  if (( $(find "$repo" -name \*.py | wc -l) > 0)) ; then
+    report_python_source_code "$repo"
+  fi
+}
+#----------------- CHANGES
+
+# Report on Java source code
+report_java_source_code()
+{
+  local repo="$1"
+  local counter=1
+
+  heading '### Java Source Code'
   if (( $(find "$repo" -name \*.java | wc -l) == 0)) ; then
     echo 'No Java files were found in the repository. Nothing to report.'
     return
@@ -249,17 +322,93 @@ Consider taking the comments into account for the remaining files.
 EOF
   (
     cd "$repo"
-
-    find . -name \*.java -ls |
-    sort -k 7nr |
-    head -5 |
-    awk '{print $11}'
-  ) |
-  while read path ; do
-    report_source_code "$repo" "$path" "4.$counter"
-    ((counter++))
-  done
+    find . -name \*.java -type f -exec wc -l {} \; |
+    sort -nr |
+    head -n 5 |
+    while read lines file; do
+      report_source_code "$repo" "${file#./}" "$counter"
+      counter=$((counter + 1))
+    done
+  )
 }
+
+
+  #   find . -name \*.java -ls |
+  #   sort -k 7nr |
+  #   head -5 |
+  #   awk '{print $11}'
+  # ) |
+  # while read path ; do
+  #   report_source_code "$repo" "$path" "4.$counter"
+  #   ((counter++))
+  # done
+
+#----------------- CHANGES
+# Report on Python source code
+report_python_source_code()
+{
+  local repo="$1"
+  local counter=1
+
+  heading '### Python Source Code'
+  if (( $(find "$repo" -name \*.py | wc -l) == 0)) ; then
+    echo 'No Python files were found in the repository. Nothing to report.'
+    return
+  fi
+
+  cat <<\EOF
+The following sections provide feedback regarding the source code of
+up to the five largest Python files included in the repository.
+Consider taking the comments into account for the remaining files.
+
+EOF
+  (
+    cd "$repo"
+    find . -name \*.py -type f -exec wc -l {} \; |
+    sort -nr |
+    head -n 5 |
+    while read lines file; do
+      report_python_file "$repo" "${file#./}" "$counter"
+      counter=$((counter + 1))
+    done
+  )
+}
+
+# Report on a specific Python file
+report_python_file()
+{
+  local repo="$1"
+  local path="$2"
+  local number="$3"
+
+  heading "## $number File $(basename $path)"
+  (
+    general_prompt
+    cat <<\EOF
+Below you will find the contents of one of the project's Python source code
+files.
+Provide feedback concerning:
+1. Code quality and readability
+2. Python-specific best practices (PEP 8)
+3. Use of Python features and idioms
+4. Documentation and docstrings
+5. Error handling and exceptions
+6. Testing and testability
+7. Performance considerations
+Only provide concrete constructive suggestions regarding possible
+improvements.
+Be succinct.
+If there is nothing important to report, just say so, e.g. "The code
+is generally OK" and be done.
+Do not summarize your findings.
+EOF
+    echo "File: $path"
+    cat "$repo/$path"
+  ) | query_ai --model gpt-4o-mini |
+    sed 's/^#/##/'
+  echo
+}
+#----------------- CHANGES
 
 # Output build specification files
 find_build()
