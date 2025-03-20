@@ -125,7 +125,7 @@ By adjusting these elements, your project can become more scalable and maintaina
 The following sections provide feedback regarding the source code of
 up to the five largest Java files included in the repository.
 Consider taking the comments into account for the remaining files.
-
+#----------------- CHANGES
 
 ## 4.1 File Tree.java
 
