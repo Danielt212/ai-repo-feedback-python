@@ -158,7 +158,6 @@ report_contents()
 Below you will find a list of the application's source files as taken from
 the repository.
 
-#----------------- CHANGES
 Please provide feedback on:
 1. Project structure and organization
 2. Missing essential files (e.g., requirements.txt, setup.py, tests)
@@ -168,7 +167,6 @@ Please provide feedback on:
 6. Continuous integration configuration
 7. Dependencies management
 8. Python-specific files (e.g., __init__.py, pyproject.toml)
-#----------------- CHANGES
 
 Do not provide comments regarding the (unknown to you) file contents.
 EOF
@@ -188,12 +186,10 @@ report_architecture()
     report_java_architecture "$repo"
   fi
 
-#----------------- CHANGES
   # Check for Python files
   if (( $(find "$repo" -name \*.py | wc -l) > 0)) ; then
     report_python_architecture "$repo"
   fi
-#----------------- CHANGES
 }
 
 # Report on Java project architecture
@@ -219,7 +215,6 @@ EOF
   ) | query_ai
 }
 
-#----------------- CHANGES
 # Report on Python project architecture
 report_python_architecture()
 {
@@ -246,7 +241,6 @@ EOF
     find . -name \*.py -exec grep "^class\|^def" {} \;
   ) | query_ai
 }
-#----------------- CHANGES
 
 # Report on each source code of the specified file
 report_source_code()
@@ -294,13 +288,13 @@ report_all_source_code()
     report_java_source_code "$repo"
   fi
 
-#----------------- CHANGES
+
   # Check for Python files
   if (( $(find "$repo" -name \*.py | wc -l) > 0)) ; then
     report_python_source_code "$repo"
   fi
 }
-#----------------- CHANGES
+
 
 # Report on Java source code
 report_java_source_code()
@@ -343,7 +337,7 @@ EOF
   #   ((counter++))
   # done
 
-#----------------- CHANGES
+
 # Report on Python source code
 report_python_source_code()
 {
@@ -408,7 +402,6 @@ EOF
     sed 's/^#/##/'
   echo
 }
-#----------------- CHANGES
 
 # Output build specification files
 find_build()
