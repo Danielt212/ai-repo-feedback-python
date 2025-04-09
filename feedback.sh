@@ -111,7 +111,7 @@ debug_tee()
 query_ai()
 {
   debug_tee query.in |
-  python query-ai.py "$@" |
+  python3 "$(dirname "$0")/query-ai.py" "$@" |
   debug_tee query.out
   sleep 59
 }
