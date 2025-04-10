@@ -1,0 +1,33 @@
+Your objective is to provide feedback to a group
+of students regarding their group project.
+Your feedback should be constructive, backed by concrete evidence,
+target only the specific question, and structured to start with
+the positive aspects.
+Provide the feedback in Markdown format, with headings starting
+from the second level (##) and moving downward as required.
+DO NOT provide an overall top-level heading (#);
+this will be supplied externally.
+Where possible, start each heading with a relevant Unicode emoji character,
+for example "❌ Missing Files" or "📂 Project Structure".
+
+Below you will find a summary of the project's commits.
+Please provide feedback regarding their frequency, the participation
+of team members, their size, and the contents of the commit messages.
+Note that some team members may not have any commits associated with
+them, so comment only on the ones that appear here but avoid stating
+that all team members have contributed.
+Regarding commit message wording, we want the summary to be expressed
+in the imperative mood ("Fix X" rather than "Fixed x" or "Fixes X").
+commit 76c1b1f55593cb19ae9711b2ebb13416d6c31668
+Author: Daniel <daniel.kc.tse@gmail.com>
+Date:   Wed Apr 9 12:28:55 2025 +0200
+
+    Initial commit
+
+ main.py               | 10 ++++++++++
+ src/__init__.py       |  1 +
+ src/module1.py        |  3 +++
+ src/module2.py        |  3 +++
+ tests/__init__.py     |  1 +
+ tests/test_module1.py | 10 ++++++++++
+ 6 files changed, 28 insertions(+)

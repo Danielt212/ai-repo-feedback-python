@@ -270,7 +270,7 @@ EOF
     echo "File: $path"
     # Remove non-ASCII characters, as we can't know the encoding
     cat "$repo/$path"
-  ) | query_ai --model gpt-4o-mini |
+  ) | "$(dirname "$0")/query-ai.py" --model gpt-4o-mini |
     sed 's/^#/##/'
   echo
 }
@@ -343,6 +343,7 @@ report_python_source_code()
 {
   local repo="$1"
   local counter=1
+  local script_dir="$(cd "$(dirname "$0")" && pwd)"
 
   heading '### Python Source Code'
   if (( $(find "$repo" -name \*.py | wc -l) == 0)) ; then
@@ -356,16 +357,17 @@ up to the five largest Python files included in the repository.
 Consider taking the comments into account for the remaining files.
 
 EOF
-  (
-    cd "$repo"
-    find . -name \*.py -type f -exec wc -l {} \; |
-    sort -nr |
-    head -n 5 |
-    while read lines file; do
-      report_python_file "$repo" "${file#./}" "$counter"
-      counter=$((counter + 1))
-    done
-  )
+
+  # Find Python files and sort by size without changing directory
+  find "$repo" -name "*.py" -type f -exec wc -l {} \; |
+  sort -nr |
+  head -n 5 |
+  while read lines file; do
+    # Extract relative path from the full path
+    relative_path=${file#$repo/}
+    report_python_file "$repo" "$relative_path" "$counter"
+    counter=$((counter + 1))
+  done
 }
 
 # Report on a specific Python file
@@ -374,6 +376,7 @@ report_python_file()
   local repo="$1"
   local path="$2"
   local number="$3"
+  local script_dir="$(cd "$(dirname "$0")" && pwd)"
 
   heading "## $number File $(basename $path)"
   (
@@ -398,7 +401,7 @@ Do not summarize your findings.
 EOF
     echo "File: $path"
     cat "$repo/$path"
-  ) | query_ai --model gpt-4o-mini |
+  ) | python3 "$script_dir/query-ai.py" --model gpt-4o-mini |
     sed 's/^#/##/'
   echo
 }
